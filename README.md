@@ -1,6 +1,6 @@
 # OSET: Organic Synthesis Exploration Tool
 
-This is a mirror of abandoned project [OSET](https://web.archive.org/web/20130622005623/http://ivan.tubert.org:80/caos/index.html), distributed under [GNU General Public License](http://www.gnu.org/copyleft/gpl.html)
+This is a mirror of abandoned project [OSET](https://web.archive.org/web/20130622005623/http://ivan.tubert.org:80/caos/index.html) by Iván Tubert, distributed under [GNU General Public License](http://www.gnu.org/copyleft/gpl.html)
 
 ## *Repository structure*
 |Index| Content |
