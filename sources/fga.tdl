@@ -1,0 +1,172 @@
+; fga.tdl
+;
+; Copyright (C) 2000 Ivan Tubert and Eduardo Tubert
+; 
+; Contact: tubert@eros.pquim.unam.mx
+; 
+; This program is free software; you can redistribute it and/or
+; modify it under the terms of the GNU General Public License
+; as published by the Free Software Foundation; either version 2
+; of the License, or (at your option) any later version.
+; All we ask is that proper credit is given for our work, which includes
+; - but is not limited to - adding the above copyright notice to the beginning
+; of your source code files, and to any copyright notice that you may distribute
+; with programs based on this work.
+; 
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+; 
+; You should have received a copy of the GNU General Public License
+; along with this program; if not, write to the Free Software
+; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. 
+; 
+
+
+; **********************************************************************************
+; ******************         F G A      ********************************************
+; **********************************************************************************
+
+
+.rxn
+name "Clemmensen or Wolff-Kishner reduction"
+type FGA
+gprec ketone
+rating=50
+
+.conditions
+	strong_base
+.comments
+	"Clemmensen reduction uses zinc amalgam and HCl. Wolff-Kishner uses hydrazine, KOH and heat.\n"
+	"Reference: March 4th ed. 9-37"
+
+.start
+if ((a1 is alpha_ch) and (nH(a1) >= 2)) then
+	ox = add(a1, O)
+        makebond(a1, ox)
+	done
+endif
+
+
+.rxn
+name "Alcohol reduction"
+type FGA
+gprec alcohol
+rating=50
+
+.conditions
+	strong_base
+.comments
+	"Usually done in two steps: formation of sulfonate or halide followed by "
+	"reduction with LiAlH4, NaBH4, etc.\n"
+	"Reference: March 4th ed. 0-78, 0-77, 0-76"
+
+
+.start
+if ((a1 is alpha_ch) and (nH(a1) > 0)) then
+	ox = add(a1, O)
+	done
+endif
+
+
+.rxn
+name "Catalytic olefin hydrogenation"
+type FGA
+gprec olefin
+rating=50
+
+.conditions
+	strong_base
+.comments
+	"The catalyst is usually Pt, Pd, or Raney Ni.\n"
+	"Reference: March 4th ed. 0-74"
+
+.start
+if ((a1 is alpha_ch) and (nh(a1) > 0)) then
+	foratom(alpha from a1)
+		if((alpha is alkyl) and (nh(alpha) > 0)) then
+			makebond(a1, alpha)
+			done
+		endif
+	next
+endif
+
+.rxn
+name "Catalytic alkyne hydrogenation"
+type FGA
+gprec alkyne
+rating=50
+
+.conditions
+	strong_base
+.comments
+	"The catalyst is usually Pt, Pd, or Raney Ni.\n"
+	"Reference: March 4th ed. 5-9"
+
+
+.start
+if ((nh(a1) > 1) and (a1 is alpha_ch)) then
+	foratom(alpha from a1)
+                if((alpha is alpha_ch) and (nh(alpha) > 1)) then
+			makebond(a1, alpha)
+			makebond(a1, alpha)
+			done
+		endif
+	next
+endif
+
+
+.rxn
+name "Decarboxylation"
+type FGA
+gprec ester
+rating=40
+
+.conditions
+	strong_base
+.comments
+	"Heat"
+	"Reference: March 4th ed. 2-40"
+
+.start
+if((a1 is C)and (nH(a1) > 0)) then
+	if(a1 is alpha_carbonyl) then
+		rating = rating+10
+		echo("Rating increased for beta-cetoacids")
+	endif
+	new_C = add(a1, C)
+	new_O = add(new_C, O)
+	makebond(new_C, new_O)
+	add(new_C, O)
+	done
+endif
+
+
+.rxn
+name "Ester Hydrolysis and Decarboxylation"
+type FGA
+gprec ester
+rating=40
+
+.conditions
+	strong_base
+.comments
+	"Aqueous acid and heat. This two steps are considered as a single reaction because "
+	"they are usually done in 'one pot'.\n"
+	"Reference: March 4th ed. 2-40"
+
+.start
+if((a1 is C)and (nH(a1) > 0)) then
+	if(a1 is alpha_carbonyl) then
+		rating = rating+10
+		echo("Rating increased for beta-cetoacids")
+	endif
+	new_C = add(a1, C)
+	new_o = add(new_C, O)
+	makebond(new_C, new_O)
+	new_O = add(new_C, O)
+	add(new_O, C)
+	done
+endif
+

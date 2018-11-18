@@ -1,0 +1,762 @@
+; ring.tdl
+;
+; Copyright (C) 2000 Ivan Tubert and Eduardo Tubert
+; 
+; Contact: tubert@eros.pquim.unam.mx
+; 
+; This program is free software; you can redistribute it and/or
+; modify it under the terms of the GNU General Public License
+; as published by the Free Software Foundation; either version 2
+; of the License, or (at your option) any later version.
+; All we ask is that proper credit is given for our work, which includes
+; - but is not limited to - adding the above copyright notice to the beginning
+; of your source code files, and to any copyright notice that you may distribute
+; with programs based on this work.
+; 
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+; 
+; You should have received a copy of the GNU General Public License
+; along with this program; if not, write to the Free Software
+; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. 
+; 
+
+
+;*********************************************************************************
+;*********************    R I N G   **********************************************
+;*********************************************************************************
+
+
+;******************************* CARBOCYCLIC *************************************
+
+.RXN
+NAME "Diels-Alder reaction"
+TYPE ring
+ringtype cyclohexene
+RATING=25
+link "reactions/diels-alder.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"The dienophile should contain electron-withdrawing groups. "
+	"In addition, it might be a good idea for the diene to contain electron-donating groups.\n"
+	"Reference: March, 4th. ed. 5-47"
+	
+.START
+
+if((r3 is alpha_CH) and (r4 is alpha_CH) and (r5 is alpha_CH) and (r6 is alpha_CH)) then
+	if(r4 is alpha_carbonyl) then
+		rating = rating+25
+	endif
+	if(r5 is alpha_carbonyl) then
+		rating = rating+25
+	endif
+
+	decbondorder(r1, r2)
+	breakbond(r3, r4)
+	breakbond(r5, r6)
+	incbondorder(r2, r3)
+	incbondorder(r6, r1)
+	incbondorder(r4, r5)
+	done
+endif
+
+
+.RXN
+NAME "Birch Reduction"
+TYPE ring
+ringtype cyclohexadiene14
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Reference: March, 4th. ed. 5-47"
+	
+.START
+
+if((r3 is alkyl) and (nH(r3) > 0) and (r6 is alkyl) and (nH(r6) > 0)) then
+	decbondorder(r1, r2)
+	incbondorder(r2, r3)
+	incbondorder(r6, r1)
+	done
+endif
+
+
+.RXN
+NAME "2 + 2"
+TYPE ring
+ringtype cyclobutane
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	""
+	
+.START
+
+breakbond(r1, r2)
+breakbond(r3, r4)
+makebond(r2, r3)
+makebond(r4, r1)
+done
+
+; cyclopropanes: 0-86, 0-90, 2-20, 5-50, 7-46
+
+.RXN
+NAME "Addition of carbene to double bond"
+TYPE ring
+ringtype cyclopropane
+RATING=0
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Reference: March, 4th. ed. 5-50"
+	
+.START
+
+; Should add more details about procedures
+
+
+if(nH(r1) = 2) then
+	echo("Simmons-Smith procedure: use CH2I2 and Zn-Cu.")
+;	add(r1, I)
+;	add(r1, I)
+	rating = 50
+else
+	if(nH(r1) = 1) then
+		rating = 25
+	endif
+	foratom(alpha from r1)
+		if(alpha is X) then
+			rating = rating+25
+		endif
+	next
+endif
+
+if(rating >= 50) then
+	breakbond(r1, r2)
+	breakbond(r1, r3)
+	makebond(r2, r3)
+	done(r1)
+endif
+
+
+
+
+;***************************** HETEROCYCLIC ************************************
+
+.RXN
+NAME "Paal-Knorr synthesis of furans and pyrroles"
+TYPE ring
+ringtype pyrrole, furan, thiophene
+RATING=50
+;link "reactions/paal-knorr.html"
+;multiexec=false  ; this transform should be executed only once because its
+; effect is symmetrical
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        "For furans, use acid and heat. For pyrroles, use acid, heat and "
+        "ammonia or a primary amine.\n"
+	
+.START
+breakbond(r1, r2)
+breakbond(r1, r5)
+setbondorder(r2, r3, 1)
+setbondorder(r4, r5, 1)
+new_O = add(r2, O)
+makebond(r2, new_O)
+new_O = add(r5, O)
+makebond(r5, new_O)
+if((r1 is N) and (nH(r1) = 2)) then
+	done
+else
+	done(r1)
+endif
+
+
+
+
+.RXN
+NAME "Feist-Benary Furan Synthesis"
+TYPE ring
+ringtype furan
+RATING=50
+;link "reactions/feist-benary_hantzsch.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        "Basic conditions (e.g. NaOH or py).\n"
+	
+.START
+
+if(r3 is alpha_carbonyl) then
+	breakbond(r3, r4)
+	breakbond(r1, r5)
+	setbondorder(r2, r3, 1)
+	setbondorder(r4, r5, 1)
+	new_O = add(r4, O)
+	makebond(r4, new_O)
+	makebond(r2, r1)
+	add(r5, Br)
+	done
+endif
+
+
+
+
+.RXN
+NAME "Hantzsch Pyrrole Synthesis"
+TYPE ring
+ringtype pyrrole
+RATING=50
+;link "reactions/feist-benary_hantzsch.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        "Use ammonia or a basic amine for the basic catalysis and to provide the pyrrole nitrogen.\n"
+	
+.START
+
+if(r3 is alpha_carbonyl) then
+	breakbond(r3, r4)
+	breakbond(r1, r5)
+	breakbond(r1, r2)
+	setbondorder(r2, r3, 1)
+	setbondorder(r4, r5, 1)
+	new_O = add(r5, O)
+	makebond(r5, new_O)
+	new_O = add(r2, O)
+	makebond(r2, new_O)
+	add(r4, Br)
+	if((r1 is N) and (nH(r1) = 2)) then
+		done
+	else
+		done(r1)
+	endif
+endif
+
+
+
+.RXN
+NAME "Knorr Pyrrole Synthesis"
+TYPE ring
+ringtype pyrrole
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        ""
+	
+.START
+
+
+if(r4 isnot alpha_carbonyl) then
+        rating = rating-20
+endif
+breakbond(r1, r5)
+setbondorder(r2, r3, 1)
+setbondorder(r4, r5, 1)
+breakbond(r3, r4)
+new_O = add(r5, O)
+makebond(r5, new_O)
+new_O = add(r3, O)
+makebond(r3, new_O)
+done
+
+
+
+.RXN
+NAME "Hinsberg thiophene synthesis"
+TYPE ring
+ringtype thiophene
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+      ""
+	
+.START
+if((r2 is alpha_ewg) and (r5 is alpha_ewg)) then
+	breakbond(r2, r3)
+	breakbond(r4, r5)
+	setbondorder(r3, r4, 1)
+	new_O = add(r3, O)
+	makebond(r3, new_O)
+	new_O = add(r4, O)
+	makebond(r4, new_O)
+	done
+endif
+
+
+
+.RXN
+NAME "Knoevenagel pyridine synthesis"
+TYPE ring
+ringtype pyridine
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        "Use hydroxylamine.\n"
+	
+.START
+
+
+breakbond(r1, r2)
+breakbond(r6, r1)
+setbondorder(r2, r3, 1)
+setbondorder(r3, r4, 1)
+setbondorder(r4, r5, 1)
+setbondorder(r5, r6, 1)
+new_O = add(r2, O)
+makebond(r2, new_O)
+new_O = add(r6, O)
+makebond(r6, new_O)
+done(r1)
+
+
+.RXN
+NAME "Hantzsch pyridine synthesis"
+TYPE ring
+ringtype pyridine
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        "Use ammonia for the basic catalysis and to provide the pyridine nitrogen.\n"
+
+.START
+
+if((r3 is alpha_carbonyl) and (r5 is alpha_carbonyl)) then
+        breakbond(r1, r2)
+        breakbond(r3, r4)
+        breakbond(r4, r5)
+        breakbond(r6, r1)
+        setbondorder(r2, r3, 1)
+        setbondorder(r5, r6, 1)
+        new_O = add(r2, O)
+        makebond(r2, new_O)
+        new_O = add(r6, O)
+        makebond(r6, new_O)
+        new_O = add(r4, O)
+        makebond(r4, new_O)
+        done(r1)
+endif
+
+
+.RXN
+NAME "Kronhke pyridine synthesis"
+TYPE ring
+ringtype pyridine
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        ""
+
+.START
+
+breakbond(r1, r2)
+breakbond(r1, r6)
+breakbond(r4, r5)
+setbondorder(r2, r3, 1)
+setbondorder(r3, r4, 2)
+setbondorder(r5, r6, 1)
+new_O = add(r6, O)
+makebond(r6, new_O)
+new_O = add(r2, O)
+makebond(r2, new_O)
+add(r5, Br)
+done(r1)
+
+
+.RXN
+NAME "Corey? pyridine synthesis"
+TYPE ring
+ringtype pyridine
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        "1) ketone + N2H4. 2) LDA. 3) enone + ammonia."
+
+.START
+
+breakbond(r1, r2)
+breakbond(r1, r6)
+breakbond(r4, r5)
+setbondorder(r2, r3, 1)
+setbondorder(r3, r4, 2)
+setbondorder(r5, r6, 1)
+new_O = add(r6, O)
+makebond(r6, new_O)
+new_O = add(r2, O)
+makebond(r2, new_O)
+done(r1)
+
+
+.RXN
+NAME "Guareschi-Thorpe 2-pyridone synthesis"
+TYPE ring
+ringtype pyridine12dihydro
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"1) ketone + N2H4. 2) LDA. 3) enone + ammonia."
+
+.START
+
+if((r2 is carbonyl) and (r3 is alpha_ewg2)) then
+	breakbond(r3, r4)
+	breakbond(r6, r1)
+	setbondorder(r5, r6, 1)
+	new_O = add(r6, O)
+	makebond(r6, new_O)
+	new_O = add(r4, O)
+	makebond(r4, new_O)
+	; should rescan and check some symmetry
+	done
+
+endif
+
+;**************************** BENZOFUSED CARBOCYCLIC ************************
+
+
+.RXN
+NAME "Dehydrogenation of 1,2,3,4 - tetrahydronaphtalene"
+TYPE ring
+ringtype naphtalene
+RATING=50
+;link "reactions/fischer.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        ""
+	
+.START
+setbondorder(r1, r2, 1)
+setbondorder(r2, r3, 1)
+setbondorder(r3, r4, 1)
+setbondorder(r4, r5, 1)
+setbondorder(r5, r6, 1)
+setbondorder(r6, r1, 1)
+setbondorder(s1, s2, 1)
+setbondorder(s2, s3, 2)
+setbondorder(s3, s4, 1)
+setbondorder(s4, s5, 2)
+setbondorder(s5, s6, 1)
+setbondorder(s6, s1, 2)
+done
+
+
+
+;******************************* BENZOFUSED HETEROCYCLIC *************************
+
+
+.RXN
+NAME "Fischer indole synthesis"
+TYPE ring
+ringtype indole
+RATING=50
+;link "reactions/indole.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        ""
+	
+.START
+breakbond(r1, r2)
+breakbond(r3, r4)
+setbondorder(r2, r3, 1)
+new_O = add(r2, O)
+makebond(r2, new_O)
+add(r1, N)
+done
+
+
+
+.RXN
+NAME "Madelung indole synthesis"
+TYPE ring
+ringtype indole
+RATING=50
+;link "reactions/indole.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        ""
+	
+.START
+breakbond(r2, r3)
+new_O = add(r2, O)
+makebond(r2, new_O)
+done
+
+
+
+.RXN
+NAME "Bischler indole synthesis"
+TYPE ring
+ringtype indole
+RATING=50
+;link "reactions/indole.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        ""
+	
+.START
+breakbond(r1, r2)
+breakbond(r3, r4)
+setbondorder(r2, r3, 1)
+new_O = add(r3, O)
+makebond(r3, new_O)
+add(r2, Br)
+done
+
+
+.RXN
+NAME "Skraup quinoline synthesis"
+TYPE ring
+ringtype quinoline
+RATING=50
+;link "reactions/quinoline.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        ""
+	
+.START
+breakbond(r1, r2)
+breakbond(r4, r5)
+setbondorder(r3, r4, 1)
+setbondorder(r2, r3, 2)
+new_O = add(r4, O)
+makebond(r4, new_O)
+done
+
+
+.RXN
+NAME "Combes quinoline synthesis"
+TYPE ring
+ringtype quinoline
+RATING=50
+;link "reactions/quinoline.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        ""
+	
+.START
+breakbond(r1, r2)
+breakbond(r4, r5)
+setbondorder(r3, r4, 1)
+setbondorder(r2, r3, 1)
+new_O = add(r4, O)
+makebond(r4, new_O)
+new_O = add(r2, O)
+makebond(r2, new_O)
+done
+
+
+
+.RXN
+NAME "Friedlander quinoline synthesis"
+TYPE ring
+ringtype quinoline
+RATING=50
+;link "reactions/quinoline.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        ""
+	
+.START
+breakbond(r1, r2)
+breakbond(r3, r4)
+setbondorder(r2, r3, 1)
+new_O = add(r4, O)
+makebond(r4, new_O)
+new_O = add(r2, O)
+makebond(r2, new_O)
+done
+
+
+
+.RXN
+NAME "Pfitzinger quinoline synthesis"
+TYPE ring
+ringtype quinoline
+RATING=50
+;link "reactions/quinoline.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        ""
+	
+.START
+if(r4 is alpha_carbonyl) then
+	foratom(alpha from r4)
+		if(alpha is carbonyl) then
+			alpha1 = alpha
+			foratom(beta from alpha1)
+				if(beta <> r4) then
+					beta1 = beta
+				endif
+			next
+		endif
+	next
+
+	breakbond(r1, r2)
+	breakbond(r3, r4)
+	setbondorder(r2, r3, 1)
+	new_O = add(r4, O)
+	makebond(r4, new_O)
+	new_O = add(r2, O)
+	makebond(r2, new_O)
+	breakbond(alpha1, beta1)
+	makebond(beta1, r1)
+	done
+	
+endif
+
+
+;******************************* APPENDAGE DISCONNECTION *************************
+
+
+.RXN
+NAME "Friedel-Crafts acylation"
+TYPE GP1		 
+G1 ketone
+RATING=50
+;link "reactions/friedel-crafts.html"
+
+.CONDITIONS
+        STRONG_BASE
+
+.COMMENTS
+        "Uses AlCl3 or FeCl3 as catalyst.\n"
+        "Reference: March 4th ed. 1-14"
+
+.START
+foratom(alpha from a1)
+	if(alpha is phenyl) then
+		BREAKBOND(a1, alpha)
+		add(a1, Cl)
+		DONE
+	ENDIF
+next
+
+
+.RXN
+NAME "Friedel-Crafts alkylation"
+TYPE Ring
+ringtype benzene
+RATING=35
+;link "reactions/friedel-crafts.html"
+
+.CONDITIONS
+        STRONG_BASE
+
+.COMMENTS
+        "Uses AlCl3 or FeCl3 as catalyst.\n"
+
+.START
+foratom(alpha from r1)
+        if((alpha isnot phenyl) and (alpha is alpha_ch)) then
+                if(alpha is quaternary) then
+                        rating = rating + 15 ; 
+                endif
+		BREAKBOND(r1, alpha)
+		add(alpha, Cl)
+		DONE
+        ENDIF
+next
+
+
+
+.RXN
+NAME "Aromatic halogenation"
+TYPE GP1
+G1 aryl_chloride, aryl_bromide
+RATING=50
+;link "reactions/friedel-crafts.html"
+
+.CONDITIONS
+        STRONG_BASE
+
+.COMMENTS
+        "Uses AlCl3 or FeCl3 as catalyst.\n"
+        "Reference: March 4th ed. 1-14"
+
+.START
+BREAKBOND(a1, a2)
+DONE(a2)
+
+
+
+.RXN
+NAME "Aromatic nitration"
+TYPE GP1
+G1 nitro
+RATING=50
+
+.CONDITIONS
+        STRONG_BASE
+
+.COMMENTS
+        "Use sulfonitric mixture.\n"
+        ""
+
+.START
+BREAKBOND(a1, a2)
+DONE(a2)
+

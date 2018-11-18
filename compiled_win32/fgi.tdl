@@ -1,0 +1,476 @@
+; fgi.tdl
+;
+; Copyright (C) 2000 Ivan Tubert and Eduardo Tubert
+; 
+; Contact: tubert@eros.pquim.unam.mx
+; 
+; This program is free software; you can redistribute it and/or
+; modify it under the terms of the GNU General Public License
+; as published by the Free Software Foundation; either version 2
+; of the License, or (at your option) any later version.
+; All we ask is that proper credit is given for our work, which includes
+; - but is not limited to - adding the above copyright notice to the beginning
+; of your source code files, and to any copyright notice that you may distribute
+; with programs based on this work.
+; 
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+; 
+; You should have received a copy of the GNU General Public License
+; along with this program; if not, write to the Free Software
+; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. 
+; 
+
+;*********************************************************************************
+;*********************    F G I     **********************************************
+;*********************************************************************************
+;***** This file contains isohypsic reactions. For redox reactions, see
+;***** ox.tdl and red.tdl
+
+;*********************************************************************
+;***************** SUBSTITUTIONS *************************************
+;*********************************************************************
+
+;*********** SP3 ******************************************************
+
+.RXN
+NAME "Halogenation of alcohols"
+type fgi1
+G1 alkyl_bromide, alkyl_chloride, alkyl_iodide
+gprec alcohol
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"SOCl2, HBr, PBr3, HI, etc. may be used.\n"
+	"Reference: March 4th ed. 0-67"
+	
+.START
+Breakbond(a1, a2)
+add(a1, O)
+Done(a2)
+
+
+
+.RXN
+NAME "Hydrolisis of alkyl bromide"
+type fgi1
+G1 alcohol
+gprec alkyl_bromide
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        "Usually done under basic conditions, except for SN1 active substrates.\n"
+        "Reference: March 4th ed. 0-1"
+
+.START
+Breakbond(a1, a2)
+add(a1, Br)
+Done(a2)
+
+
+
+.RXN
+NAME "Thiolisis of alkyl bromide"
+type fgi1
+G1 thiol
+gprec alkyl_bromide
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        "Use NaSH"
+
+.START
+Breakbond(a1, a2)
+add(a1, Br)
+Done(a2)
+
+
+
+.RXN
+NAME "Alkylation of ammonia"
+type fgi1
+G1 amine1
+gprec alkyl_bromide
+RATING=45
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        "Ammonia is not usually a good choice because of overalkylation. "
+        "Better use hexamethylenetetramine with active halides, or the Gabriel synthesis. "
+        "(using N-bromo-ftalimide).\n"
+        "References: March 4th ed. 0-43, 0-44, 0-58"
+	
+.START
+if(a2 isnot phenyl) then
+	Breakbond(a1, a2)
+	add(a2, Br)
+	Done(a1)
+endif
+
+
+;************ SP2 ************************************************
+
+
+.RXN
+NAME "Ester hydrolysis"
+type fgi1
+G1 acid
+gprec ester
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"H2O in either acid or basic conditions.\n"
+	"Reference: March 4th ed. 0-10"
+
+	
+.START
+add(a3, C)
+done
+
+
+.RXN
+NAME "Ester hydrolysis"
+type fgi1
+G1 alcohol
+gprec ester
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"H2O in either acid or basic conditions.\n"
+	"Reference: March 4th ed. 0-10"
+
+	
+.START
+new_C = add(a2, C)
+new_O = add(new_C, O)
+incbondorder(new_C, new_O)
+add(new_C, C)
+done
+
+
+
+.RXN
+NAME "Acyl chloride hydrolysis"
+type fgi1
+G1 acid
+gprec acyl_chloride
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"H2O, sometimes basic conditions are needed.\n"
+	"Reference: March 4th ed. 0-8"
+	
+.START
+breakbond(a1,a3)
+add(a1, Cl)
+done(a3)
+
+
+;*********************************************************************
+;************************** ADDITIONS ********************************
+;*********************************************************************
+
+.RXN
+NAME "HBr addition to double bond"
+type fgi1
+G1 alkyl_bromide
+gprec olefin
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"In the absence of peroxides, the Markovnikov product is obtained; "
+	"in the presence of peroxides, the anti-Markovnikov product is obtained. "
+	"The reaction usually occurs at room temperature.\n"
+	"Reference: March 4th ed. 5-1"
+	
+.START
+;should check regioselectivity
+foratom(beta from a1)
+        if((beta is alkyl) and (beta isnot quaternary)) then
+                Breakbond(a1, a2)
+                makebond(a1, beta)
+                Done(a2)
+        endif
+next
+
+
+
+.RXN
+NAME "Bromine addition to double bond"
+type fgi2
+G1 alkyl_bromide
+G2 alkyl_bromide
+gprec olefin
+path=2
+
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Use bromine in CCl4.\n"
+	"Reference: March 4th ed. 5-26"
+	
+.START
+breakbond(a1, a2)
+breakbond(b1, b2)
+makebond(a2, b2)
+makebond(a1, b1)
+done(a2, b2)
+
+
+
+.RXN
+NAME "HOBr addition to double bond"
+type fgi2
+G1 alkyl_bromide
+G2 alcohol
+gprec olefin
+path=2
+
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Use aqueous Br2."
+	"Reference: March 4th ed. 5-27"
+
+	
+.START
+breakbond(a1, a2)
+breakbond(b1, b2)
+makebond(a2, b2)
+makebond(a1, b1)
+done(a2, b2)
+
+
+.RXN
+NAME "Alkene hydration"
+type fgi1
+G1 alcohol
+gprec olefin
+RATING=50
+;link "reactions/alkene_hydration.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Oxymercuration gives the Markovnikov product; hydroboration / oxidation "
+	"gives the anti-Markovnikov product."
+	"Reference: March 4th ed. 5-2"
+	
+.START
+foratom(alpha from a1)
+	rating = 50
+	if(alpha <> a2) then
+		if(nh(alpha) > 0) then
+			breakbond(a1, a2)
+			makebond(a1,alpha)
+			if(nh(alpha) < nh(a1)) then
+				echo("Hydroboration might be better")
+			else
+				if(nh(alpha) > nh(a1)) then
+					echo("Hydroxymercuration might be better")
+				else
+					echo("Difficult selectivity!")
+					rating = rating-20
+				endif
+			endif
+			done(a2)
+		endif 
+	endif
+next
+
+
+.rxn
+name "Alkyne hydration"
+type fgi1
+g1 ketone, aldehyde
+gprec alkyne
+rating=50
+
+.conditions
+	strong_base
+
+.comments
+	"Use Hg2SO4 as catalyst.\n"
+	"Reference: March 4th ed. 5-3"
+
+.start
+foratom(alpha from a1)
+	rating = 50
+	if((alpha is C) and (nH(alpha) > 1)) then
+		if(nH(a1) = 1) then
+			echo("Use hydroboration / oxidation")
+		else
+			if(nH(alpha) = 3) then
+                                rating = rating + 10
+                                echo("Use oximercuration")
+				; cosa chistosa
+			else
+				echo("Selectivity may be a problem!")
+				rating = rating - 20
+			endif
+		endif
+		breakbond(a1, a2)
+		makebond(a1, alpha)
+		makebond(a1, alpha)
+                done(a2)
+	endif
+next
+
+
+
+.RXN
+NAME "Enol ether hydrolysis"
+type fgi1
+G1 ketone, aldehyde
+gprec enol_ether
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Aqueous acid"
+		
+.START
+foratom(alpha from a1)
+	if(alpha is C) then
+		decbondorder(a1,a2)
+		incbondorder(a1, alpha)
+		add(a2, C)
+		done
+	endif
+next
+
+
+.rxn
+name "Acetal hydrolysis"
+type fgi1
+g1 ketone, aldehyde
+gprec acetal
+rating=50
+
+.conditions
+	strong_base
+
+.comments
+        "Acid catalysis.\n"
+        "Note: any alcohol or diol may be used to form the alcohol; here we used methanol as an example.\n"
+
+.start
+decbondorder(a1, a2)
+new_O = add(a1, O)
+add(new_O, C)
+add(a2, C)
+done
+
+
+
+.RXN
+NAME "Nitrile hydrolysis to carboxylic acid"
+type fgi1
+G1 acid
+gprec Cyanide
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"H2O in either acid or basic conditions.\n"
+	"Reference: March 4th ed. 6-5"
+	
+.START
+breakbond(a1,a2)
+breakbond(a1,a3)
+nit = add(a1, N)
+makebond(a1, nit)
+makebond(a1, nit)
+done(a2, a3)
+
+
+
+;*********************************************************************
+;********************  ELIMINATIONS  *********************************
+;*********************************************************************
+
+.RXN
+NAME "Alcohol dehydration"
+type fgi1
+G1 olefin
+gprec alcohol
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"May give rearrangement products. Gives predominantly the most substituted alkene, unless "
+	"there are conjugated alternatives. Also, may give the ether as a byproduct.\n"
+	"Reference: March 4th ed. 7-1"
+	
+.START
+;should check regiochemistry
+breakbond(a1, a2)
+makebond(a1, a2)
+add(a1, O)
+done
+
+
+.RXN
+NAME "Dehydrohalogenation"
+type fgi1
+G1 olefin
+gprec alkyl_bromide
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Usually done with hot alcoholic KOH. Gives predominantly the most substituted alkene "
+	"(Zaitsev's rule), unless there are conjugated alternatives or strong steric hidrance. \n"
+	"Reference: March 4th ed. 7-13"
+	
+.START
+;should check regiochemistry
+breakbond(a1, a2)
+makebond(a1, a2)
+add(a1, Br)
+done
+
+
+
+
+

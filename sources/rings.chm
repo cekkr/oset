@@ -1,0 +1,151 @@
+; rings.chm
+; Copyright (C) 2000 Ivan Tubert and Eduardo Tubert
+; 
+; Contact: tubert@eros.pquim.unam.mx
+; 
+; This program is free software; you can redistribute it and/or
+; modify it under the terms of the GNU General Public License
+; as published by the Free Software Foundation; either version 2
+; of the License, or (at your option) any later version.
+; All we ask is that proper credit is given for our work, which includes
+; - but is not limited to - adding the above copyright notice to the beginning
+; of your source code files, and to any copyright notice that you may distribute
+; with programs based on this work.
+; 
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+; 
+; You should have received a copy of the GNU General Public License
+; along with this program; if not, write to the Free Software
+; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. 
+; 
+
+/* format: 
+ *              RING_NAME = "PATTERN", COMPLEXITY
+ * RING_NAME must be unique: it cannot be the name of a functional group or
+ * atom type.
+ * PATTERN is a list of atoms, each atom optionally followed by a bond:
+ * =, or # for double or triple. A bond after the last atom leads to the
+ * first atom.
+ * Only one-letter symbols are allowed at this time. There must not be spaces
+ * between atoms.
+ * Lowercase atoms are aromatic. All atoms in a ring must be of the same type
+ * (aromatic or non-aromatic). In aromatic rings, multiple-bond specifications
+ * are ignored.
+ * COMPLEXITY must be an integer.
+ */
+
+benzene = "cccccc", 15
+pyridine = "nccccc", 25
+pyridine12dihydro = "NCC=CC=C", 25
+cyclohexane = "CCCCCC", 25
+cyclohexene = "C=CCCCC", 10
+cyclohexadiene14 = "C=CCC=CC", 0
+pyrrole = "ncccc", 25
+furan = "occcc", 25
+thiophene = "scccc", 25
+cyclobutane = "CCCC", 25
+cyclopropane = "CCC", 25
+oxirane = "OCC", 15
+dioxolane = "COCCO", 0
+
+indole = (pyrrole,A=[5,4])(benzene,A=[2,3]),40
+naphtalene = (benzene,A=[5,6])(benzene,A=[4,3]),40
+anthracene = (benzene,A=[6,5])(benzene,A=[5,6]B=[2,3])(benzene,B=[6,5]), 70
+quinoline = (pyridine,A=[6,5])(benzene,A=[5,6]),50
+
+
+/* Other less important rings which could be added some sunny day:
+cyclopentane = "CCCCC", 25
+thiophene = "scccc", 25
+THP = "OCCCCC", 25
+DHP = "OC=CCCC", 25
+imidazole = "ncncc", 25
+pirazole = "nnccc", 25
+aziridine = "NCC", 25
+oxazole = "ncocc", 25
+
+
+
+*/
+
+/*  SOME POSSIBLE RING TRANSFORMS
+
+.RXN
+NAME "Fischer indole synthesis"
+TYPE ring
+ringtype pyrrole;  pyrrole(benzene(2,3)) ; pyrrole(pyridine(2,3,4=N,());benzene(4,5))
+RATING=50
+;link "reactions/fischer.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        ""
+	
+.START
+if( getring(benzene, r2, r3) ) then  
+        breakbond(r3, r4)
+        breakbond(r1, r5)
+        add(r1, N)
+        breakbond(r4, r5)
+        makebond(r4, r5)
+        new_O = add(r5, O)
+        makebond(r5, new_O)
+        done
+endif
+
+
+.RXN
+NAME "Friedel-Crafts alkylation"
+TYPE ring
+ringtype benzene
+RATING=50
+;link "reactions/paal-knorr.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        ""
+	
+.START
+alpha = getappg(r1)
+orto1 = getappg(r2)
+orto2 = getappg(r6)
+meta1 = getappg(r3)
+meta2 = getappg(r5)
+para = getappg(r4)
+
+if(orto1 is ewg) then
+        rating = rating - 25
+endif
+
+if(orto2 is ewg) then
+        rating = rating - 25
+endif
+
+if(para is ewg) then
+        rating = rating - 25
+endif
+
+if(orto1 is bulky) then
+        rating = rating - 25
+endif
+
+if(orto2 is bulky) then
+        rating = rating - 25
+endif
+
+if(rating > 0) then
+        breakbond(alpha, r1)
+        add(a1, Br)
+        DONE
+endif
+
+
+
+*/

@@ -1,0 +1,94 @@
+; rxns.chm
+;
+; Copyright (C) 2000 Ivan Tubert and Eduardo Tubert
+; 
+; Contact: tubert@eros.pquim.unam.mx 
+; 
+; This program is free software; you can redistribute it and/or
+; modify it under the terms of the GNU General Public License
+; as published by the Free Software Foundation; either version 2
+; of the License, or (at your option) any later version.
+; All we ask is that proper credit is given for our work, which includes
+; - but is not limited to - adding the above copyright notice to the beginning
+; of your source code files, and to any copyright notice that you may distribute
+; with programs based on this work.
+; 
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+; 
+; You should have received a copy of the GNU General Public License
+; along with this program; if not, write to the Free Software
+; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. 
+; 
+
+
+; reactions that might be added some rainy Sunday:
+; heck, stille, suzuki, neguishi reactions ?
+; cope rearrangements
+; allylic rearrangement: C=CCO => C(O)C=C
+; Ritter reaction
+; friedel-crafts alkylation (remember rearrangements)
+; 1,4 reduction of conjugated diene. 1,4 addition
+; transamidation
+; michael addition of CN-?
+; check alkene hydration: should not work in 1,2 diols
+; 0-102: RX + CO = RCHO
+; aldehyde <-> CN 6-22 & 6-28 ;CN -> CNHH
+; Thorpe reaction, 6-48
+
+/* This file serves as an index to the other reaction files : */
+
+
+
+include "fg1.tdl"
+include "fg2.tdl"
+include "fgi.tdl"
+include "ox.tdl"
+include "red.tdl"
+include "fga.tdl"
+include "fgr.tdl"
+include "ring.tdl"
+include "fg0.tdl"
+  
+
+/*
+.rxn
+name "test reaction"
+type gp1
+g1 ether1
+
+rating=50
+
+.start
+if(a2 iseq a3) then
+	echo("Son iguales!")
+
+
+	done
+else
+	echo("Son diferentes!")
+
+	done
+endif
+
+  */
+
+
+/* wishlist
+ if(a1 == b2) then
+ multiexec
+ add2					   ?
+ add3					   ?
+ add(atom, element, order) ?
+ reaction classes?
+
+ indole
+ check that naphtalene is executed four times
+
+*/
+
+; reaction::= ".RXN" header* ".START" body
+; header::= conditionblock | commentblock | linkblock
+; conditionblock::= .CONDITIONS

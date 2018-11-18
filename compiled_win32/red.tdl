@@ -1,0 +1,162 @@
+; red.tdl
+;
+; Copyright (C) 2000 Ivan Tubert and Eduardo Tubert
+; 
+; Contact: tubert@eros.pquim.unam.mx
+; 
+; This program is free software; you can redistribute it and/or
+; modify it under the terms of the GNU General Public License
+; as published by the Free Software Foundation; either version 2
+; of the License, or (at your option) any later version.
+; All we ask is that proper credit is given for our work, which includes
+; - but is not limited to - adding the above copyright notice to the beginning
+; of your source code files, and to any copyright notice that you may distribute
+; with programs based on this work.
+; 
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+; 
+; You should have received a copy of the GNU General Public License
+; along with this program; if not, write to the Free Software
+; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. 
+; 
+
+; ******************** REDUCTIONS **********************************
+
+.RXN
+NAME "Carbonyl reduction"
+type fgi1
+G1 alcohol
+gprec aldehyde, ketone
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"LiAlH4, NaBH4, etc."
+	"Reference: March 4th ed. 6-25"
+	
+.START
+if(nh(a1) > 0) then
+	makebond(a1,a2)
+	done
+endif
+
+
+
+.RXN
+NAME "Ester reduction"
+type fgi1
+G1 alcohol
+gprec ester
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"LiAlH4, NaBH4, etc."
+	"Reference: March 4th ed. 9-42"
+
+	
+.START
+if(nh(a1) >= 2) then
+	new_O = add(a1, O)
+	makebond(a1, new_O)
+	add(a2, C)
+	done
+endif
+
+
+.rxn
+name "Alkyne partial hydrogenation"
+type fgi1
+g1 olefin
+gprec alkyne
+rating=50
+
+.conditions
+	strong_base
+
+.comments
+	"H2 over Pd/BaSO4/quinoline for cis alkenes and Na/NH3 for trans alkenes.\n"
+	"Reference: March 4th ed. 0-74"
+
+.start
+if((nH(a1) > 0) and (nH(a2) > 0)) then
+	makebond(a1, a2)
+	done
+endif
+
+
+.rxn
+name "Reductive amination"
+type fgi1
+g1 amine1
+gprec ketone, aldehyde
+rating=50
+
+.conditions
+	strong_base
+
+.comments
+	"Reference: March 4th ed. 6-15"
+
+.start
+if(nh(a2) > 0) then
+        breakbond(a1, a2)
+        ox = add(a2, O)
+        makebond(a2, ox)
+        done(a1)
+endif
+
+
+.rxn
+name "Amide reduction"
+type fgi1
+g1 amine1, amine2, amine3
+gprec amide
+rating=50
+
+.conditions
+	strong_base
+
+.comments
+	"LiAlH4"
+	"Reference: March 4th ed. 9-39"
+
+.start
+foratom(alpha from a1)
+	if((alpha is alkyl) and (nh(alpha) >=2)) then
+		new_O = add(alpha, O)
+		makebond(alpha, new_O)
+		done
+	endif
+next
+
+
+.rxn
+name "Nitro reduction"
+type fgi1
+g1 amine1
+gprec nitro
+rating=50
+
+.conditions
+	strong_base
+
+.comments
+	"Active metal/hydrogen is a good reducing agent for this reaction.\n"
+
+.start
+new_O = add(a1, O)
+makebond(a1, new_O)
+new_O = add(a1, O)
+makebond(a1, new_O)
+done
+
+
+

@@ -1,0 +1,203 @@
+; ox.tdl
+;
+; Copyright (C) 2000 Ivan Tubert and Eduardo Tubert
+; 
+; Contact: tubert@eros.pquim.unam.mx
+; 
+; This program is free software; you can redistribute it and/or
+; modify it under the terms of the GNU General Public License
+; as published by the Free Software Foundation; either version 2
+; of the License, or (at your option) any later version.
+; All we ask is that proper credit is given for our work, which includes
+; - but is not limited to - adding the above copyright notice to the beginning
+; of your source code files, and to any copyright notice that you may distribute
+; with programs based on this work.
+; 
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+; 
+; You should have received a copy of the GNU General Public License
+; along with this program; if not, write to the Free Software
+; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. 
+; 
+; ********************* OXIDATIONS ***********************************
+
+.RXN
+NAME "Alcohol oxidation to ketone or aldehyde"
+type fgi1
+G1 ketone, aldehyde
+gprec alcohol
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"CrO3, PCC etc."
+	"Reference: March 4th ed. 9-3"
+	
+.START
+breakbond(a1,a2)
+makebond(a1,a2)
+done
+
+
+
+.RXN
+NAME "Alcohol oxidation to carboxylic acid"
+type fgi1
+G1 acid
+gprec alcohol
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"CrO3, KMnO4, HNO3, etc.\n"
+	"Reference: March 4th ed. 9-22"
+	
+.START
+breakbond(a1,a2)
+done(a2)
+
+
+
+.RXN
+NAME "Aldehyde oxidation to carboxylic acid"
+type fgi1
+G1 acid
+gprec aldehyde
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"CrO3, KMnO4, HNO3, etc.\n"
+	"Reference: March 4th ed. 4-6"
+	
+.START
+breakbond(a1,a3)
+done(a3)
+
+
+.RXN
+NAME "Acyl chloride formation"
+type fgi1
+G1 acyl_chloride
+gprec acid
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"SOCl2 or oxalyl chloride"
+	"Reference: March 4th ed. 0-74"
+	
+.START
+breakbond(a1,a3)
+add(a1, O)
+done(a3)
+
+
+
+.RXN
+NAME "Acyl chloride reduction"
+type fgi1
+G1 aldehyde
+gprec acyl_chloride
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"LiAlH(t-BuO)3"
+	
+.START
+add(a1, Cl)
+done
+
+
+.RXN
+NAME "Alkene oxidation to oxirane"
+type fgi1
+G1 ether
+gprec olefin
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Use MCPBA or other peracid; or HOBr followed by a base."
+	"Reference: March 4th ed. 5-36"
+
+	
+.START
+if(ringsize(a1, a2) = 3) then
+	breakbond(a1, a2)
+	breakbond(a1, a3)
+	makebond(a2, a3)
+	done(a1)
+endif
+
+
+
+.RXN
+NAME "Dihydroxylation"
+type fgi2
+G1 alcohol
+G2 alcohol
+gprec olefin
+path=2
+
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"OSO4"
+	"Reference: March 4th ed. 5-35"
+
+	
+.START
+breakbond(a1, a2)
+breakbond(b1, b2)
+makebond(a2, b2)
+makebond(a1, b1)
+done(a2, b2)
+
+
+
+
+.rxn
+name "Alkyne oxidation"
+type fgi2
+g1 ketone
+g2 ketone
+gprec alkyne
+path = 2
+rating=50
+
+.conditions
+	strong_base
+
+.comments
+	"Use aqueous diluted KMNO4 under neutral conditions."
+	"Reference: March 4th ed. 9-27"
+
+
+.start
+breakbond(a1, a2)
+breakbond(b1, b2)
+makebond(a1, b1)
+makebond(a1, b1)
+done(a2, b2)
+
+

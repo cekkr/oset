@@ -1,0 +1,311 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTFILE
+//
+
+IDMOL_GPLTEXT           TEXTFILE DISCARDABLE    "license.txt"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+RETROCURSOR             CURSOR  DISCARDABLE     "cur00001.cur"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Spanish (Mexican) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESM)
+#ifdef _WIN32
+LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MEXICAN
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+ERASERCURSOR            CURSOR  DISCARDABLE     "cursor1.cur"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+MYMENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Open\tCtrl+O",               IDMOL_FILE_OPEN
+        MENUITEM "&Save\tCtrl+S",               IDMOL_FILE_SAVE
+        MENUITEM "Save &As",                    IDMOL_FILE_SAVEAS
+        MENUITEM "&Close",                      IDMOL_FILE_CLOSE, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Return to &edit mode",        IDMOL_EDITMODE, GRAYED
+        MENUITEM "E&xit\tAlt+F4",               IDMOL_FILE_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               IDMOL_EDIT_UNDO
+        MENUITEM "&Redo\tCtrl+Y",               IDMOL_EDIT_REDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                IDMOL_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               IDMOL_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              IDMOL_EDIT_PASTE
+        MENUITEM "&Delete\tDel",                IDMOL_EDIT_DELETE
+    END
+    POPUP "&Chemistry"
+    BEGIN
+        MENUITEM "List &errors",                IDMOL_SHOWERRORS, GRAYED
+        MENUITEM "List atom &types",            IDMOL_SHOWATOMTYPES, GRAYED
+        MENUITEM "List &rings",                 IDMOL_SHOWRINGS, GRAYED
+        MENUITEM "List &functional groups",     IDMOL_SHOWFG, GRAYED
+        MENUITEM "List e&quivalence classes",   IDMOL_SHOWEQ, GRAYED
+        MENUITEM "Calculate &complexity",       IDMOL_COMPLEXITY, GRAYED
+        MENUITEM "&SMILES",                     IDMOL_SMILES, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "&Analyze Molecule",           IDMOL_ANALYZE, GRAYED
+    END
+    POPUP "&Options"
+    BEGIN
+        MENUITEM "Show &Numbers\tCtrl-N",       IDMOL_TOGGLENUMBERS, CHECKED
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About",                      IDMOL_ABOUT
+        MENUITEM "&License",                    IDMOL_LICENSE
+        MENUITEM "&Home Page",                  IDMOL_HOMEPAGE
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+DIELSALDERICON          ICON    DISCARDABLE     "icon1.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+MYACCELERATORS ACCELERATORS DISCARDABLE 
+BEGIN
+    "C",            IDMOL_EDIT_COPY,        VIRTKEY, CONTROL, NOINVERT
+    "N",            IDMOL_TOGGLENUMBERS,    VIRTKEY, CONTROL, NOINVERT
+    "O",            IDMOL_FILE_OPEN,        VIRTKEY, CONTROL, NOINVERT
+    "S",            IDMOL_FILE_SAVE,        VIRTKEY, CONTROL, NOINVERT
+    "V",            IDMOL_EDIT_PASTE,       VIRTKEY, CONTROL, NOINVERT
+    "X",            IDMOL_EDIT_CUT,         VIRTKEY, CONTROL, NOINVERT
+    "Y",            IDMOL_EDIT_REDO,        VIRTKEY, CONTROL, NOINVERT
+    "Z",            IDMOL_EDIT_UNDO,        VIRTKEY, CONTROL, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    "MYDIALOG", DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 215
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 113
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+MYDIALOG DIALOG DISCARDABLE  0, 0, 223, 120
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About OSETWIN"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,151,91,50,14,WS_GROUP
+    LTEXT           "OSETWin version 0.25.",IDC_STATIC,18,13,89,10,
+                    SS_NOPREFIX | NOT WS_GROUP
+    CTEXT           "Here goes the date",IDC_DATE,124,13,68,10,SS_NOPREFIX | 
+                    NOT WS_GROUP
+    CONTROL         "bmpabout",IDC_STATIC,"Static",SS_BITMAP | WS_GROUP,174,
+                    56,11,11
+    LTEXT           "Copyright (C) 2000 by Ivan Tubert and Eduardo Tubert",
+                    IDC_STATIC,18,28,189,13
+    LTEXT           "This is free software published under the GNU General Public License. See help/license for details.\n\nOSET homepage: http://litio.pquim.unam.mx/caos",
+                    IDC_STATIC,18,47,120,57
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+BMPABOUT                BITMAP  DISCARDABLE     "bitmap1.bmp"
+ID_MYTOOLBAR            BITMAP  DISCARDABLE     "mytoolba.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+ID_MYTOOLBAR TOOLBAR DISCARDABLE  16, 16
+BEGIN
+    BUTTON      ID_BUTTONSELECT
+    BUTTON      ID_BUTTONERASE
+    BUTTON      ID_BUTTONBOND
+    BUTTON      ID_BUTTONHETEROATOM
+    BUTTON      ID_BUTTONHEX
+    SEPARATOR
+    BUTTON      ID_BUTTONNUM
+    SEPARATOR
+    BUTTON      ID_BUTTONNEXT
+    BUTTON      ID_BUTTONPREV
+    SEPARATOR
+    BUTTON      ID_BUTTONANALYZEMODE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDMOL_FILE_OPEN         "Opens a new target molecule"
+    IDMOL_FILE_CLOSE        "Closes the file"
+    IDMOL_FILE_EXIT         "Exits OSETWin"
+    IDMOL_TOGGLENUMBERS     "Toggles atom numbering on or off"
+    IDMOL_SHOWERRORS        "Shows chemical errors in the molecule"
+    IDMOL_SHOWATOMTYPES     "Shows the chemical classification for each atom"
+    IDMOL_ABOUT             "About OSETWin"
+    ID_BUTTONNUM            "Toggle numbers button"
+    ID_BUTTONHEX            "About button"
+    ID_BUTTONBOND           "Bond"
+    ID_BUTTONERASE          "Erase"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_BUTTONHETEROATOM     "Hetero"
+    ID_BUTTONSELECT         "Select"
+    IDMOL_ANALYZE           "Enter retrosynthetic analysis mode"
+    IDMOL_FILE_SAVEAS       "Save molecule"
+    ID_BUTTONNEXT           "Next"
+    ID_BUTTONPREV           "Prev"
+    ID_BUTTONOPEN           "Open"
+    ID_BUTTONCUT            "Cut"
+    ID_BUTTONCOPY           "Copy"
+    ID_BUTTONPASTE          "Paste"
+    IDMOL_EDIT_UNDO         "Undoes the last action"
+    ID_BUTTONSAVE           "Save"
+    IDMOL_EDIT_CUT          "Cuts the selected molecule to the clipboard"
+    ID_BUTTONUNDO           "Undo"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDMOL_HOMEPAGE          "Opens the OSET home page using the default browser"
+    ID_BUTTONANALYZETOOL    "Analyze"
+    IDMOL_SMILE             "Generate a SMILES string for the selected molecule"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDMOL_EDIT_COPY         "Copies the selected molecule to the clipboard"
+    ID_BUTTONANALYZEMODE    "Analyze mode"
+    IDMOL_COMPLEXITY        "Calculate the complexity of the current molecule"
+    IDMOL_EDIT_PASTE        "Pastes the contents of the clipboard"
+    IDMOL_EDITMODE          "Ends the current retrosynthetic analysis and returns to edit mode"
+    IDMOL_SHOWRINGS         "Lists all the rings of chemical interest in the molecule"
+    IDMOL_SHOWFG            "Lists functional groups"
+    IDMOL_FILE_SAVE         "Save molecule"
+    IDMOL_SHOWEQ            "Lists classes of topologically equivalent atoms"
+    IDMOL_EDIT_REDO         "Redoes the last action"
+    IDMOL_EDIT_DELETE       "Deletes the selection"
+    IDMOL_LICENSE           "Shows the GNU General Public License"
+    ID_BUTTONREDO           "Redo"
+END
+
+#endif    // Spanish (Mexican) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

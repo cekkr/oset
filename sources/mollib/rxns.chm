@@ -1,0 +1,27 @@
+
+.RXN
+NAME "Paal-Knorr synthesis of furanes and pyrroles"
+TYPE ring
+ringtype pyrrole, furan
+RATING=50
+;link "reactions/paal-knorr.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+        ""
+	
+.START
+breakbond(r1, r2)
+breakbond(r1, r5)
+breakbond(r2, r3)
+breakbond(r4, r5)
+makebond(r2, r3)
+makebond(r2, r3)
+new_O = add(r2, O)
+makebond(r2, new_O)
+new_O = add(r5, O)
+makebond(r5, new_O)
+DONE(r1)
+

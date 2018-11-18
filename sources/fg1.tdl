@@ -1,0 +1,616 @@
+; fg1.tdl 
+;
+; Copyright (C) 2000 Ivan Tubert and Eduardo Tubert
+; 
+; Contact: tubert@eros.pquim.unam.mx
+; 
+; This program is free software; you can redistribute it and/or
+; modify it under the terms of the GNU General Public License
+; as published by the Free Software Foundation; either version 2
+; of the License, or (at your option) any later version.
+; All we ask is that proper credit is given for our work, which includes
+; - but is not limited to - adding the above copyright notice to the beginning
+; of your source code files, and to any copyright notice that you may distribute
+; with programs based on this work.
+; 
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+; 
+; You should have received a copy of the GNU General Public License
+; along with this program; if not, write to the Free Software
+; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. 
+; 
+
+
+
+;**************************************************************************
+;************************    G P 1   **************************************
+;**************************************************************************
+
+
+.RXN
+NAME "Enolate alkylation"
+TYPE GP1
+g1 ketone, ester, cyanide
+RATING=50
+link "reactions/enolate.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Basic conditions, usually low temperatures.\n"
+	"Reference: March 4th ed. 0-95, 0-94"
+
+.START
+
+
+FORATOM (ALPHA FROM A1)
+	if (alpha is alkyl) then
+		FORATOM (BETA FROM ALPHA)
+			IF (BETA IS alpha_ch) THEN 
+				if(beta is quaternary) then
+					echo("The reaction is not possible in this case (tertiary substrate) under normal conditions, but it is possible with the use of a preformed silyl enol ether and Lewis acid catalysis.")
+					rating = rating-10
+				else
+					IF ((beta IS ALLYL) or (beta is benzyl)) THEN 
+						echo("Rating improved because beta is allylic")
+						RATING=RATING+10 
+					else
+						IF (beta is tertiary) THEN 
+							echo("Rating decreased because substrate is secondary")
+							RATING=RATING-10 
+						ENDIF
+					endif
+				endif
+
+
+				BREAKBOND(ALPHA, BETA)
+				ADD(BETA, Br)
+				DONE
+				Rating=50
+			ENDIF
+		NEXT
+	endif
+NEXT
+
+
+.RXN
+NAME "Amide N-alkylation"
+TYPE GP1
+G1 amide
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Strongly basic conditions.\n"
+	"Reference: March 4th ed. 0-58"
+
+.START
+
+foratom(alpha from a3)
+	if((alpha is alkyl) and (alpha isnot quaternary)) then
+		breakbond(a3, alpha)
+		add(alpha, Br)
+		done
+	endif
+next
+
+
+
+
+
+.RXN
+NAME "Michael addition of organocuprate"
+TYPE GP1
+G1 KETONE, ester, cyanide
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Basic conditions, usually low temperatures.\n"
+	"Reference: March 4th ed. 0-95, 0-94"
+
+.START
+
+
+FORATOM (ALPHA FROM A1)
+	foratom(beta from alpha)
+		if((beta <> a1) and (alpha is alpha_ch) and (beta is alpha_ch) and (nh(alpha) > 0)) then
+			foratom(gamma from beta)
+				if((gamma <> alpha) and (gamma is alpha_ch))then
+					breakbond(beta, gamma)
+					add(gamma, Br)
+					makebond(alpha, beta)
+					done
+				endif
+			next
+		endif
+	next
+NEXT
+
+
+
+
+
+.RXN
+NAME "Esterification"
+TYPE GP1
+G1 ESTER
+RATING=50
+;link "reactions/esterification.html"
+
+.CONDITIONS
+	SOCl2
+.COMMENTS
+	"Frequently the acyl halide or the anhydride is used instead of the acid. "
+	"The acid can be converted to the halide using SOCl2\n"
+	"Reference: March 4th ed. 0-20, 0-21, 0-22"
+	
+.START
+
+IF (A4 IS VINYL) THEN
+	RATING=RATING-20
+	echo("Rating decreased for vinylic substrates")
+ENDIF
+
+BREAKBOND(A3, A4)
+ADD(A4, O)
+DONE
+
+
+
+.RXN
+NAME "Amidation"
+TYPE GP1
+G1 AMIDE
+RATING=40
+
+.CONDITIONS
+	SOCl2
+.COMMENTS
+	"Amides may be obtained using acyl chlorides (usually preferred), anhydrides, acids, esters or other amides. "
+	"Here we represent only the acid because it would seem redundant to present all cases.\n"
+	"Reference: March 4th ed. 0-52, 0-53, 0-54, 0-55, 0-56"
+	
+.START
+
+BREAKBOND(A1, A3)
+ADD(A1, O)
+if(nH(a3) = 3) then
+	done(a3)
+else
+	done
+endif
+
+
+
+.RXN
+NAME "Favorskii rearrangement"
+TYPE GP1
+G1 ESTER, acid
+RATING=45
+;link "reactions/favorskii.html"
+
+.CONDITIONS
+	SOCl2
+.COMMENTS
+	"Basic conditions. Actually the alkoxide is used instead of the alcohol "
+	"(or hydroxide when the target is an acid). " 
+	"This reaction is useful for ring contractions.\n"
+	"Reference: March 4th ed. 8-7"
+	
+.START
+
+FORATOM(ALPHA FROM A1)
+	IF((ALPHA IS ALKYL) AND (ALPHA ISNOT PRIMARY)) THEN
+		FORATOM(BETA FROM ALPHA)
+			IF(BETA IS ALKYL) THEN
+				BREAKBOND(A1, A3)
+				BREAKBOND(ALPHA, BETA)
+				MAKEBOND(BETA, A1)
+				ADD(ALPHA, Br)
+				if(nh(a3) = 2) then
+					done(a3)
+				else
+					DONE
+				endif
+			ENDIF
+		NEXT
+	ENDIF
+NEXT
+
+
+.RXN
+NAME "Grignard carbonyl addition"
+TYPE GP1
+G1 ALCOHOL
+RATING=50
+link "reactions/grignard.html"
+
+.CONDITIONS
+	STRONG_BASE
+.COMMENTS
+	"Mg, dry ether for the Grignard rxn. The Reformatski rxn may also be used, "
+	"the main difference being that zinc is used instead of Mg.\n"
+	"Reference: March 4th ed. 6-29"
+	
+.START
+
+FORATOM (BETA FROM A1)
+	IF ((BETA IS alpha_ch) OR (BETA IS PHENYL)) THEN 
+		BREAKBOND(A1, BETA)
+		MAKEBOND(A1, A2)
+		ADD(BETA, Br)
+		DONE
+	ENDIF
+NEXT
+
+
+
+.RXN
+NAME "Grignard CO2 addition"
+TYPE GP1
+G1 acid
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+.COMMENTS
+	"Usually done by adding the Grignard reagent to dry ice.\n"
+	"Reference: March 4th ed. 6-34"
+	
+.START
+
+foratom(alpha from a1)
+	if(alpha is alkyl) then
+		breakbond(a1, alpha)
+		makebond(a1, a3)
+		add(alpha, Br)
+		done(a1)
+	endif
+next
+
+
+
+.RXN
+NAME "Reaction of organometallic reagent with epoxide"
+TYPE GP1
+G1 ALCOHOL
+RATING=50
+link "reactions/grignard.html"
+
+.CONDITIONS
+	STRONG_BASE
+.COMMENTS
+	"Grignard reagents or dialkylcopper may be used. Usually the later is better. "
+	"Attack occurs at the less substituted site."
+	"Reference: March 4th ed. 0-93"
+	
+.START
+; currently only ethylene oxide is considered...
+FORATOM (BETA FROM A1) ; a1 is the alpha-carbon.  CCCO => CBr + C1CO1
+	IF ((BETA IS ALKYL) and (nH(beta) >= nH(a1))) THEN 
+		foratom(gamma from beta)
+			if (gamma <> A1) then
+				if(gamma is alkynyl) then
+					BREAKBOND(beta, gamma)
+					makebond(beta, a2);    (a2 is the oxygen atom)
+					DONE
+				else
+					if((gamma is alpha_ch) or (gamma is vinyl) or (gamma is phenyl)) then
+						BREAKBOND(beta, gamma)
+						ADD(gamma, Br)
+						makebond(beta, a2);    (a2 is the oxygen atom)
+						DONE
+					endif
+				endif
+			endif
+		next
+	ENDIF
+NEXT
+
+
+
+
+.RXN
+NAME "Nitrile formation (SN2)"
+TYPE GP1
+G1 CYANIDE
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Usually done in DMSO"
+	"Reference: March 4th ed. 0-101"
+	
+.START
+
+IF ((A3 IS ALKYL) AND (A3 ISNOT QUATERNARY)) THEN 
+	if(a3 is tertiary) then
+		rating = rating-10
+		echo("Rating decreased for secondary halide")
+	endif
+	BREAKBOND(A1, A3)
+	ADD(A3, Br)
+	DONE(a1)
+ENDIF
+
+
+
+.RXN
+NAME "Wittig reaction"
+TYPE GP1
+G1 OLEFIN
+RATING=50
+link "reactions/wittig.html"
+
+.CONDITIONS
+	ABSTRACT_CONDITION
+.COMMENTS
+	"The reaction is between the aldehyde or ketone and a phosphorus ylide. "
+	"The ylide can be obtained from the alkyl halide by adding triphenyl phospine, "
+	"followed by a strong base. "
+	"Reference: March 4th ed. 6-47"
+	
+.START
+
+if((a1 isnot phenyl) and (a2 isnot phenyl)) then
+	BREAKBOND(A1, A2)
+	ox = ADD(A1, O)
+	MAKEBOND(A1, OX)
+	ADD(A2, Br)
+	DONE
+endif
+
+
+
+
+
+/*
+.R XN
+NAME "Grignard addition to aldehyde/oxidation"
+TYPE GP1
+G1 KETONE
+RATING=45
+
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"The oxidation step may be done with Cr(VI), Mn(VII), Mn(IV), among others.\n"
+	"Reference: March 4th ed. 6-29, 9-3"
+	
+
+.START
+
+
+FORATOM (ALPHA FROM A1)
+	IF ((ALPHA IS ALKYL) OR (ALPHA IS PHENYL)) THEN
+		BREAKBOND(A1, ALPHA)
+		ADD(ALPHA, Br)
+		DONE
+	ENDIF
+NEXT
+*/
+
+
+
+
+.RXN
+NAME "Grignard addition to nitrile"
+TYPE GP1
+G1 KETONE
+RATING=40
+link "reactions/grignard.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"The addition of a Grignard reagent to a nitrile gives a ketimine salt, which on "
+	"hydrolysis gives the ketone.\n"
+	"Reference: March 4th ed. 6-37"
+
+
+.START
+
+; rating should be improved for aromatic alphas
+FORATOM (ALPHA FROM A1)
+	IF ((ALPHA IS alpha_ch) OR (ALPHA IS PHENYL)) THEN
+		BREAKBOND(A1, ALPHA)
+		ADD(ALPHA, Br)
+		breakbond(a1, a2)
+		new_N = add(a1, N)
+		makebond(a1, new_N)
+		makebond(a1, new_N)
+		DONE(a2)
+	ENDIF
+NEXT
+
+
+
+.RXN
+NAME "Grignard addition to ester"
+TYPE GP1
+G1 KETONE
+RATING=50
+link "reactions/grignard.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Amides or acyl chlorides may be used instead of esters. In all cases the tertiary "
+	"alcohol may be a byproduct, which may be reduced by the use of low temperatures "
+	"or other changes in reaction conditions.\n"
+	"Reference: March 4th ed. 0-105, 0-104"
+	
+
+.START
+
+;should consider alkynyl organometallic reagents
+FORATOM (ALPHA FROM A1)
+	IF ((ALPHA IS alpha_ch) OR (ALPHA IS PHENYL)) THEN
+		BREAKBOND(A1, ALPHA)
+		ADD(ALPHA, Br)
+		new_O = add(a1, O)
+		add(new_O, C)
+		DONE
+	ENDIF
+NEXT
+
+
+
+.RXN
+NAME "Williamson ether synthesis"
+TYPE GP1
+G1 ether, thiol
+RATING=50
+;link "reactions/williamson.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"May be intramolecular, especially for the preparation of 3-, 5-, and 6-membered rings. "
+	"Usually proceeds via SN2 mechanism.\n "
+	"Reference: March 4th ed. 0-12"
+	
+.START
+
+
+FORATOM (ALPHA FROM A1)
+	IF ((ALPHA IS ALKYL) and (alpha isnot tertiary)) THEN
+		if(alpha is secondary) then
+			rating = rating-10
+		endif
+		BREAKBOND(A1, ALPHA)
+		ADD(ALPHA, Br)
+		DONE
+	ENDIF
+NEXT
+
+
+
+.RXN
+NAME "Amine alkylation"
+TYPE GP1
+G1 amine2, amine3
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Reference: March 4th ed. 0-43"
+	
+.START
+
+
+FORATOM (ALPHA FROM A1)
+	IF ((ALPHA IS ALKYL) and (alpha isnot tertiary)) THEN
+		if(a1 is secondary) then
+			rating = rating-10
+		endif
+		BREAKBOND(A1, ALPHA)
+		ADD(ALPHA, Br)
+		DONE
+	ENDIF
+NEXT
+
+
+.RXN
+NAME "Terminal alkyne alkylation"
+TYPE GP1
+G1 alkyne
+RATING=45
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Reference: March 4th ed. 0-100"
+	
+.START
+
+
+FORATOM (ALPHA FROM A1)
+	IF ((ALPHA IS ALKYL) and (alpha isnot quaternary)) THEN
+		if(alpha is tertiary) then
+			rating = rating-15
+		endif
+		if((alpha is allyl) or (alpha is benzyl) or (alpha is alpha_alkynyl))then
+			rating = rating+10
+		endif
+
+		foratom(beta from alpha)
+			if((beta <> a1)) then
+				if(beta is quaternary) then
+					rating = rating-10
+                                else if(beta is tertiary) then
+					rating = rating-5
+                                        endif
+                                endif
+			endif
+		next
+		BREAKBOND(A1, ALPHA)
+		ADD(ALPHA, Br)
+		DONE
+	ENDIF
+NEXT
+
+
+
+.rxn
+name "Reductive amination"
+type gp1
+g1 amine2, amine3
+rating=50
+
+.conditions
+	strong_base
+
+.comments
+        "Reference: March 4th ed. 6-15"
+
+.start
+foratom(alpha from a1)
+	if(nh(alpha) > 0) then
+		breakbond(a1, alpha)
+		ox = add(alpha, O)
+		makebond(alpha, ox)
+		done
+	endif
+next
+
+
+.rxn
+name "Acetal formation"
+type gp1
+g1 acetal
+rating=50
+
+.conditions
+	strong_base
+
+.comments
+        "Acid catalysis.\n"
+        "Reference: March 4th ed. 6-6"
+
+.start
+breakbond(a1, a2)
+breakbond(a1, a4)
+ox = add(a1, O)
+makebond(a1, ox)
+done
+

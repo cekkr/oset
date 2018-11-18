@@ -1,0 +1,448 @@
+; fg2.tdl
+;
+; Copyright (C) 2000 Ivan Tubert and Eduardo Tubert
+; 
+; Contact: tubert@eros.pquim.unam.mx
+; 
+; This program is free software; you can redistribute it and/or
+; modify it under the terms of the GNU General Public License
+; as published by the Free Software Foundation; either version 2
+; of the License, or (at your option) any later version.
+; All we ask is that proper credit is given for our work, which includes
+; - but is not limited to - adding the above copyright notice to the beginning
+; of your source code files, and to any copyright notice that you may distribute
+; with programs based on this work.
+; 
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+; 
+; You should have received a copy of the GNU General Public License
+; along with this program; if not, write to the Free Software
+; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. 
+; 
+
+
+;**************************************************************************
+;************************    G P 2   **************************************
+;**************************************************************************
+
+
+
+.RXN
+NAME "Aldol condensation"
+TYPE GP2
+G1 KETONE, aldehyde, amide, ester
+G2 ALCOHOL
+PATH=3
+RATING=50
+link "reactions/aldol.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Usually done under moderately basic conditions.\n"
+	"Reference: March 4th ed. 6-39"
+	
+
+.START
+if(b1 isnot tertiary) then
+        echo("Addition to aldehyde: Rating increased")
+        rating = rating+5
+endif
+rs = ringsize(p2, p3)
+if(rs > 0) then
+        if((rs <= 6) and (rs >= 5)) then
+                rating = rating + 10
+                echo("Intramolecular: rating increased")
+                BREAKBOND(P2, P3)
+                MAKEBOND(B1, B2)
+                DONE
+        endif
+else
+        BREAKBOND(P2, P3)
+        MAKEBOND(B1, B2)
+        DONE
+endif
+
+
+.RXN
+NAME "Claisen/Dieckmann condensation"
+TYPE GP2
+G1 ester
+G2 ketone
+PATH=3
+RATING=50
+;link "reactions/claisen.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"When intramolecular, it is called 'Dieckmann condensation'; "
+	"when intermolecular it is 'Claisen condensation.'\n"
+        "A strong base like NaH or NaNH2 is required.\n"
+	"Reference: March 4th ed. 0-108"
+	
+; COC(O)CC(O)C => COC(O)C + COC(O)C
+.START
+BREAKBOND(P2, P3)
+newatom = add(b1, O)
+add(newatom, C)
+DONE
+
+
+.RXN
+NAME "Acylation of ketones, nitriles or carboxylic acids by carboxylic esters."
+TYPE GP2
+G1 ketone, cyanide, acid
+G2 ketone
+PATH=3
+RATING=50
+;link "reactions/claisen.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"A strong base such as NaNH2 or NaH is required. This reaction is related to the "
+	"Claisen condensation. Sometimes it is possible to use acyl chlorides instead of esters.\n"
+	"Reference: March 4th ed. 0-109, 0-110."
+	
+.START
+if(p2 is alpha_ch) then
+	BREAKBOND(P2, P3)
+	new_O = add(b1, O)
+	add(new_O, C)
+	DONE
+endif
+
+
+
+
+
+.RXN
+NAME "Michael addition of enolate"
+TYPE GP2
+G1 ketone, cyanide, ester, aldehyde
+G2 ketone, cyanide, ester, aldehyde, amide
+PATH=5
+RATING=50
+;link "reactions/michael.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Usually done under basic conditions."
+	"Sometimes the 1,2 addition to the carbonyl compound predominates\n"
+	"Reference: March, 4th ed. 5-17"
+	
+
+.START
+if((p2 is alpha_ch) and (p3 is alpha_ch) and (p4 is alpha_ch) and (nh(p4) > 0)) then
+	BREAKBOND(P2, P3)
+	MAKEBOND(P3, P4)
+	DONE
+endif
+
+
+
+
+.RXN
+NAME "Michael addition of hetero nucleophile"
+TYPE GP2
+G1 ketone, cyanide, ester, aldehyde, amide
+G2 amine1, amine2, amine3, ether
+PATH=4
+RATING=50
+;link "reactions/michael.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Usually done under basic catalysis, especially for oxygen nucleophiles. "	
+	"Reference: March, 4th ed. 5-4, 5-7, 5-6"
+
+.START
+if(p2 is alpha_ch) then
+	BREAKBOND(P3, P4)
+	MAKEBOND(P2, P3)
+	DONE
+endif
+
+
+
+
+.RXN
+NAME "Aldol condensation/dehydration"
+TYPE GP2
+G1 ketone, aldehyde, ester
+G2 olefin
+PATH=2
+RATING=50
+link "reactions/aldol.html"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Basic conditions. Dehydration may be controlled by varying reaction conditions.\n"
+	"Reference: March 4th ed. 6-39"
+	
+; should lower rating for some crossed reactions and check for rings
+
+.START
+if(b1 isnot phenyl) then
+	BREAKBOND(B1, B2)
+	newatom = add(b2, O)
+	makebond(b2, newatom)
+	DONE
+endif
+
+
+.rxn
+name "Mannich reaction"
+type gp2
+g1 ketone, ester, cyanide
+g2 amine1, amine2, amine3
+path=4
+rating=55
+;link "reactions/mannich.html"
+
+.conditions
+	STRONG_BASE
+
+.comments
+	"May be done under acidic or basic conditions.\n "
+	"Reference: March 4th ed. 6-16"
+	
+
+.start
+breakbond(p2, p3)
+breakbond(p3, p4)
+new_o = add(p3, o)
+makebond(p3, new_o)
+done
+
+
+
+.RXN
+NAME "Ozonolysis, reductive"
+TYPE GP2 ; RECONECTIVE!
+G1 KETONE, aldehyde
+G2 KETONE, aldehyde
+PATH=6
+RATING=50
+;link "reactions/ozonolysis"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"The ozonolysis is followed by an reductive workup with Me2S or Zn/H+. "
+	"Notice that this is a reconective transform.\n "
+	"Reference: March 4th ed. 9-9"
+
+.START
+BREAKBOND(A1, A2)
+BREAKBOND(B1, B2)
+MAKEBOND(A1, B1)
+MAKEBOND(A1, B1)
+DONE(a2, b2)
+
+
+
+
+.RXN
+NAME "Ozonolysis, reductive"
+TYPE GP2 ; RECONECTIVE!
+G1 alcohol
+G2 alcohol
+PATH=6
+RATING=50
+;link "reactions/ozonolysis"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"The ozonolysis is followed by an reductive workup with a strong reducing agent "
+	"such as LiAlH4,NaBH4, BH3, etc. "
+	"Notice that this is a reconective transform.\n "
+	"Reference: March 4th ed. 9-9"
+
+.START
+if ((a1 isnot tertiary) and (b1 isnot tertiary)) then
+BREAKBOND(A1, A2)
+BREAKBOND(B1, B2)
+MAKEBOND(A1, B1)
+MAKEBOND(A1, B1)
+DONE(a2, b2)
+endif
+
+
+.RXN
+NAME "Ozonolysis, oxidative"
+TYPE GP2 ; RECONECTIVE!
+G1 acid, ketone
+G2 acid, ketone
+PATH=6
+RATING=50
+;link "reactions/ozonolysis"
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"The ozonolysis is followed by an oxidative workup with oxygen, peracids or H2O2. "
+	"Notice that this is a reconective transform.\n "
+	"Reference: March 4th ed. 9-9"
+
+.START
+BREAKBOND(A1, A2)
+BREAKBOND(B1, B2)
+MAKEBOND(A1, B1)
+MAKEBOND(A1, B1)
+DONE(a2, a3, b2, b3)
+
+
+.RXN
+NAME "Furane hydrolysis"
+TYPE GP2 ; RECONECTIVE!
+G1 ketone, aldehyde
+G2 ketone, aldehyde
+PATH=4
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Aqueous acidic conditions. Notice that this is a reconective transform, but sometimes "
+	"it is the best way to obtain 1,4-dicarbonyl compounds.\n"
+	"Reference: March 4th ed. 0-6"
+
+
+.START
+if((nH(p2) > 0) and (nH(p3) > 0)) then
+        BREAKBOND(B1, B2)
+        BREAKBOND(a1, a2)
+        makebond(a1, a2)
+        MAKEBOND(A2, B1)
+        makebond(p1, p2)
+        makebond(p3, p4)
+        DONE(b2)
+endif
+
+
+.RXN
+NAME "Benzoin condensation"
+TYPE GP2
+G1 KETONE
+G2 ALCOHOL
+PATH=2
+RATING=50
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Only works with aromatic aldehydes. The reaction is catalyzed by cyanide.\n"
+	"Reference: March 4th ed. 6-54"
+
+.START
+foratom(alpha from a1)
+	if(alpha is phenyl) then
+		foratom(alphap from b1)
+			if(alphap is phenyl) then
+				breakbond(p1, p2)
+				makebond(b1, b2)
+				done
+			endif
+		next
+	endif
+next
+
+
+.RXN
+NAME "Vinyl organometallic addition to carbonyl/dehydration"
+TYPE GP2
+G1 OLEFIN
+G2 OLEFIN
+PATH=4
+RATING=40
+
+.CONDITIONS
+	STRONG_BASE
+
+.COMMENTS
+	"Typical organometallic additions include the Grignard rxn. and the Reformatski rxn.\n"
+	"Reference: March 4th ed. 6-29, 7-1"
+
+.START
+IF ((A2 = P2) AND (B2 = P3)) THEN
+        if((p1 isnot phenyl) and (p2 isnot phenyl)) then
+                BREAKBOND(P2, P3)
+                ADD(P3, Br)
+                BREAKBOND(P1, P2)
+                MAKEBOND(P1, P2)
+                newatom = ADD(P2, O)
+                makebond(newatom, p2) 
+               DONE
+        endif
+ENDIF
+
+
+
+.RXN
+NAME "Claisen rearrangement"
+TYPE GP2 ; REARRANGEMENT!
+G1 ketone, aldehyde, ester
+G2 olefin
+PATH=4
+RATING=35
+
+.CONDITIONS
+	ABSTRACT_CONDITION
+
+.COMMENTS
+	"Requires heating; temperature depends on specific conditions.\n"
+	"Reference: March 4th ed. 8-35"
+
+.start
+if ((p3 is alkyl) and (p2 is alkyl)) then
+	breakbond(a1, a2)
+	breakbond(p2, p3)
+	makebond(a1, a2)
+	makebond(p1, p2)
+	breakbond(b1, b2)
+	makebond(b1, b2)
+	makebond(a2, b2)
+	makebond(p3, p4)
+	done
+endif
+
+
+.rxn
+name "Cyanhydrin formation"
+type gp2
+g1 cyanide
+g2 alcohol
+path=2
+rating=50
+
+.conditions
+	strong_base
+
+.comments
+	"Reference: March 4th ed. 6-49"
+
+.start
+breakbond(p1, p2)
+makebond(b1, b2)
+done(a1)
+

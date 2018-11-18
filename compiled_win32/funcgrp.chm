@@ -1,0 +1,67 @@
+; funcgrp.chm
+;
+; Copyright (C) 2000 Ivan Tubert and Eduardo Tubert
+; 
+; Contact: tubert@eros.pquim.unam.mx
+; 
+; This program is free software; you can redistribute it and/or
+; modify it under the terms of the GNU General Public License
+; as published by the Free Software Foundation; either version 2
+; of the License, or (at your option) any later version.
+; All we ask is that proper credit is given for our work, which includes
+; - but is not limited to - adding the above copyright notice to the beginning
+; of your source code files, and to any copyright notice that you may distribute
+; with programs based on this work.
+; 
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+; 
+; You should have received a copy of the GNU General Public License
+; along with this program; if not, write to the Free Software
+; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. 
+; 
+
+PHENOL = "c(/O([H]))", 15
+ALCOHOL = "C(O([H]) [CH]^3)", 10
+ENOL_ETHER = "O(C([CH]^3) /C(=/C [CH]))", 15
+AMINE1 = "N(C(~[CH]^{2-3}) [H]^2)", 10 ; [NH2]C
+ACID = "C(=O O([H]) [CH])", 10 ; C(=O)([OH])[C,H]
+OLEFIN = "/C(=/C([CH]^2) [CH]^2)", 5 ;
+KETONE = "C(=O [C]^2)", 10
+ESTER = "C(=O O(C([CH]^3)) [CH])", 10
+ALDEHYDE = "C(=O C [H])", 15
+CYANIDE = "C(#N C)", 10
+AMIDE = "C(=O N([CH]^2]) [CH])", 10
+AMINE2 = "N(C([CH]^{2-3}) C([CH]^{2-3}) [H])", 10
+AMINE3 = "N(C([CH]^{2-3}) C([CH]^{2-3}) C([CH]^{2-3}))", 10
+;AMMONIUM = "N+(C([CH]^{2-3}) C([CH]^{2-3}) C([CH]^{2-3}) C([CH]^{2-3}))", 10
+ETHER = "O(C([CH]^{2-3}) C([CH]^{2-3}))", 10
+THIOL = "S(C([CH]^{2-3}) C([CH]^{2-3}))", 10
+ALKYNE = "C(#C([CH]) [CH])", 5
+NITRO = "C(N(=O =O) ~[CH]^{2-3})", 10
+ALKYL_BROMIDE = "C(Br [CHBrClI]^3)", 20
+ALKYL_CHLORIDE = "C(Cl [CHClBrI]^3)", 20
+ALKYL_IODIDE = "C(I [CHClBrI]^3)", 20
+ARYL_CHLORIDE = "c(Cl)", 10
+ARYL_BROMIDE = "c(Br)", 10
+ACYL_CHLORIDE = "C(=O Cl C)", 25
+ACETAL = "C(O(C) O(C) [CH]^2)", 20
+VINYL_BROMIDE = "/C(=/C Br [CHBr])", 20
+;AMINAL = "C(N N [CH]^2", 25
+;ACETAMINAL = "C(N O [CH]^2", 25
+
+
+; funcgrp ::= atom | atom '(' bondgrp* optional ')'
+; bondgrp ::= bondfuncgrp | bondfuncgrp ' ' bondgrp
+; bondfuncgrp ::= bond funcgrp
+; atom ::= asym | /asym
+; asym ::= sym | sym '+' | sym '-'
+; sym ::= [C, N, O, ...]
+; bond ::= [e, =, #, ~]
+; optional ::= e | bond '[' atom* ']' power
+; power ::= e | '^' range
+; range ::= digit | '{' digit '-' digit '}'
+; digit ::= [1, 2, 3, 4]
+
