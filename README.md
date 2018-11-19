@@ -255,16 +255,16 @@ Let us look at another example: the alcohol.
 Here the carbon is the root atom, and its neighbors are the oxygen (which in turn is bonded to hydrogen) atom and three soft atoms, each of which may be either carbon or hydrogen. Notice that this definition rules out enols, gem-diols, a-halohydrins, phenols, among others. We decided that this restrictive definition was better from a synthetic point of view. For example, even if an enol may be regarded as a kind of alcohol, its reactions and synthesis are different enough to regard it as an independent functional group.
 
 Here is the complete list of special characters used in functional group descriptions:
-|Chars| Function |
-|--|--|
-| ***[ ]*** | Encloses soft atoms. Between the brackets there must be a list of one or more chemical elements. The number of soft atoms may be optionally specified using ^n after the closing bracket. |
-| ***^*** | Must be followed by a number or a range of numbers. Ranges consist of two numbers separated by a hyphen and enclosed in curly brackets. Numbers may only be used for soft atoms. |
-| ***{ }*** | Encloses a range. |
-| ***( )***  | Encloses the neighbor list of an atom. Only hard atoms may have neighbor lists. There may be parentheses inside parentheses, generating a tree-like structure. The neighbor list can have zero or more hard atoms, optionally followed by one soft atom.|
-| ***-*** | Separates the lower limit from the upper limit of a range. |
-| ***=*** | Double bond. Must be immediately before a hard atom. |
-| ***%*** | Triple bond. Must be immediately before a hard atom. |
-| ***" "*** | Encloses the pattern string. |
+| Chars | Function |
+| --- | --- |
+| `[ ]` | Encloses soft atoms. Between the brackets there must be a list of one or more chemical elements. The number of soft atoms may be optionally specified using ^n after the closing bracket. |
+| `^` | Must be followed by a number or a range of numbers. Ranges consist of two numbers separated by a hyphen and enclosed in curly brackets. Numbers may only be used for soft atoms. |
+| `{ }` | Encloses a range. |
+| `( )`  | Encloses the neighbor list of an atom. Only hard atoms may have neighbor lists. There may be parentheses inside parentheses, generating a tree-like structure. The neighbor list can have zero or more hard atoms, optionally followed by one soft atom.|
+| `-` | Separates the lower limit from the upper limit of a range. |
+| `=` | Double bond. Must be immediately before a hard atom. |
+| `%` | Triple bond. Must be immediately before a hard atom. |
+| `" "` | Encloses the pattern string. |
 
 
 ## *OSET Applet Help*
